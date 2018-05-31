@@ -1,0 +1,1 @@
+effectivity-sample-application
