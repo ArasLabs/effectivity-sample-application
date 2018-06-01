@@ -1,0 +1,3 @@
+<imports>
+  <package name="com.aras.innovator.solution.effs_sample" path="effs_sample\Import" />
+</imports>

@@ -1,0 +1,266 @@
+﻿<AML>
+ <Item type="Method" id="DD5304512F364DFFA12D989471801CC3" action="edit">
+  <execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to>
+  <method_code><![CDATA[		Innovator inn = this.getInnovator();
+		
+		if (!String.Equals(this.getType(), "Part", StringComparison.Ordinal))
+		    return inn.newError("Item of type Part required");
+		
+		string partId = this.getID();
+		if (String.IsNullOrEmpty(partId))
+		    return inn.newError("Part ID not specified");
+		
+		DictsForMultiBom dictOfData = new DictsForMultiBom();
+		
+		GetDataForParsing getDataForParsing = new GetDataForParsing(inn.getUserID(), this);
+		getDataForParsing.SetDataToDict(dictOfData);
+				
+		GetMultiBom ret = new GetMultiBom(CCO);		
+		string parsedData4Return = ret.GetCompleteBom(dictOfData);
+		
+		return inn.newResult(parsedData4Return);
+	}
+}
+
+class DictsForMultiBom
+{
+	public Dictionary<string, List<InfoOfItem>> dictAllItems;
+	public List<InfoOfItem> zeroLevelItems;
+}
+
+class InfoOfItem
+{
+	public string level;
+	public string id;
+	public string item_number;
+	public string revision;
+	public string state;
+	public string sort_order;
+	public string quantity;
+	public string lockedId;
+	public string name;
+	public string effectivityStringNotation;
+	public string brd;
+}
+
+class GetDataForParsing
+{
+	private string thisUserID;
+	private Item item;
+	
+	public GetDataForParsing(string userId, Item part)
+	{
+		this.thisUserID = userId;
+		this.item = part;
+	}
+	
+	public void SetDataToDict(DictsForMultiBom dictOfData)
+	{
+		Dictionary<string, List<InfoOfItem>> dictItemProp = new Dictionary<string, List<InfoOfItem>>();
+		List<InfoOfItem> zeroLevelItems = new List<InfoOfItem>();
+		Item itemList = this.GetAllItems();
+		
+		int itemsCount = itemList.getItemCount();
+		if (itemsCount == 0) return;
+		
+		for (int i = 0; i < itemsCount; i++)
+		{
+			Item itm =  itemList.getItemByIndex(i);
+			InfoOfItem infoOfItem = new InfoOfItem();
+			infoOfItem.level = itm.getProperty("level", "");
+			infoOfItem.id = itm.getProperty("related_id", "");
+			infoOfItem.item_number = itm.getProperty("related_item_number", "");
+			infoOfItem.revision = itm.getProperty("related_revision", "");
+			infoOfItem.state = itm.getProperty("related_state", "");
+			infoOfItem.sort_order = itm.getProperty("sort_order", "");
+			infoOfItem.quantity = itm.getProperty("quantity", "");
+			string lockedBY = itm.getProperty("related_locked_by_id", "");
+			if (lockedBY != "")
+				infoOfItem.lockedId = (lockedBY == this.thisUserID) ? "&lt;img src=\"../images/LockedByMe.svg\" /&gt;" : "&lt;img src=\"../images/LockedByMe.svg\" /&gt;";
+			else
+				infoOfItem.lockedId = "<emptytag />";
+			infoOfItem.name = itm.getProperty("related_name", "");
+			string partBomId = itm.getProperty("bom_id");
+			infoOfItem.effectivityStringNotation = this.GetEffectivityStringNotation(partBomId);
+			infoOfItem.brd = itm.getProperty("bom_ref_desg", "");
+						
+			if (infoOfItem.level == "0") zeroLevelItems.Add(infoOfItem);
+			
+			string source_id = string.Empty;
+			source_id = itm.getProperty("source_id", "");
+			
+			if (source_id == "") continue;
+			
+			List<InfoOfItem> dataOfItemList;
+			
+			dictItemProp.TryGetValue(source_id, out dataOfItemList);
+			if (dataOfItemList != null)
+			{
+				dataOfItemList.Add(infoOfItem);
+			}
+			else
+			{
+				List<InfoOfItem> datList = new List<InfoOfItem>();
+				datList.Add(infoOfItem);
+				dictItemProp.Add(source_id, datList);
+			}
+		}
+		
+		dictOfData.dictAllItems = dictItemProp;
+		dictOfData.zeroLevelItems = zeroLevelItems;
+	}
+
+	private string GetEffectivityStringNotation(string partBomId)
+	{
+		Item partBom = item.newItem("Part BOM", "get");
+		partBom.setID(partBomId);
+		partBom.setAttribute("select", "id");
+		partBom = partBom.apply();
+
+		if (partBom.isError())
+		{
+			throw new Aras.Server.Core.InnovatorServerException(partBom.getErrorString());
+		}
+
+		return partBom.getProperty("effectivity_string_notation", string.Empty);
+	}
+
+	private Item GetAllItems()
+	{
+		Item callframe = item.newItem("SQL", "SQL PROCESS");
+		callframe.setProperty("name", "MultiBom_GetCompleteBom1");
+		callframe.setProperty("PROCESS", "CALL");
+		callframe.setProperty("ARG1", item.getID());
+		
+		return callframe.apply();
+	}
+}
+
+class GetMultiBom
+{
+	private const String InnovatorCCOUID = "PE_GetRelatedParts_InnovatorCCO";
+	
+	public GetMultiBom(Aras.Server.Core.CallContext CCO)
+	{
+		HttpContext.Current.Items[InnovatorCCOUID] = CCO;
+	}
+	
+	private Aras.Server.Core.CallContext GetCCO()
+	{
+		return (Aras.Server.Core.CallContext)HttpContext.Current.Items[InnovatorCCOUID];
+	}
+	
+	public string GetCompleteBom(DictsForMultiBom dictOfData)
+	{
+		Dictionary<string, List<InfoOfItem>> dictAllItems = dictOfData.dictAllItems;
+		List<InfoOfItem> zeroLevelItems = dictOfData.zeroLevelItems;
+		
+		StringBuilder itemStylesheet = new StringBuilder();
+		this.GetBaseTamplate(itemStylesheet);
+		
+		if (dictAllItems != null && dictAllItems.Count != 0)
+		{
+			foreach(InfoOfItem parentItem in zeroLevelItems)
+			{
+				this.GetParsedData(parentItem, 0, itemStylesheet, dictAllItems);
+			}
+		}
+		itemStylesheet.Append("</table>");
+		return itemStylesheet.ToString();
+	}
+	
+	private string Escape(string data)
+	{
+		return System.Security.SecurityElement.Escape(data);
+	}
+	
+	private void GetParsedData(InfoOfItem iof, int level, StringBuilder itemStylesheet, Dictionary<string, List<InfoOfItem>> dictAllItems)
+	{
+		List<InfoOfItem> dataOfItemList;
+		if (level.ToString() != iof.level) return;
+		itemStylesheet.Append("<tr level=\"");
+		itemStylesheet.Append(Escape(iof.level));
+		itemStylesheet.Append("\" icon0=\"../images/Part.svg\" icon1=\"../images/Part.svg\"><userdata key=\"gridData_rowItemID\" value=\"");
+		itemStylesheet.Append(Escape(iof.id));
+		itemStylesheet.Append("\" /><td>");
+		itemStylesheet.Append(Escape(iof.item_number));
+		itemStylesheet.Append("</td><td>");
+		itemStylesheet.Append(Escape(iof.revision));
+		itemStylesheet.Append("</td><td>");
+		itemStylesheet.Append(Escape(iof.state));
+		itemStylesheet.Append("</td><td>");
+		itemStylesheet.Append(Escape(iof.sort_order));
+		itemStylesheet.Append("</td><td>");
+		itemStylesheet.Append(Escape(iof.quantity));
+		itemStylesheet.Append("</td><td>");
+		itemStylesheet.Append(iof.lockedId);
+		itemStylesheet.Append("</td><td>");
+		itemStylesheet.Append(Escape(iof.name));
+		itemStylesheet.Append("</td><td>");
+		itemStylesheet.Append(Escape(iof.effectivityStringNotation));
+		itemStylesheet.Append("</td><td>");
+		itemStylesheet.Append(Escape(iof.brd));
+		itemStylesheet.Append("</td>");
+		level++;
+		if (dictAllItems.TryGetValue(iof.id, out dataOfItemList))
+		{
+			foreach (InfoOfItem childBom in dataOfItemList)
+				GetParsedData(childBom, level, itemStylesheet, dictAllItems);
+		}
+		
+		itemStylesheet.Append("</tr>");
+	}
+	
+	private void GetBaseTamplate(StringBuilder gridStyle)
+	{
+		Aras.Server.Core.CallContext CCO = this.GetCCO();
+		XmlElement effectivityStringNotationProperty = CCO.Cache.GetPropertyFromCache("5E9C5A12CC58413A8670CF4003C57848", "effectivity_string_notation");
+		gridStyle.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+		gridStyle.Append("<table");
+		gridStyle.Append(" font=\"Microsoft Sans Serif-8\"");
+		gridStyle.Append(" sel_bgColor=\"steelbue\"");
+		gridStyle.Append(" sel_TextColor=\"white\"");
+		gridStyle.Append(" header_BgColor=\"buttonface\"");
+		gridStyle.Append(" expandroot=\"true\"");
+		gridStyle.Append(" expandall=\"false\"");
+		gridStyle.Append(" treelines=\"1\"");
+		gridStyle.Append(" editable=\"false\"");
+		gridStyle.Append(" draw_grid=\"true\"");
+		gridStyle.Append(" multiselect=\"true\"");
+		gridStyle.Append(" column_draggable=\"true\"");
+		gridStyle.Append(" enableHtml=\"false\"");
+		gridStyle.Append(" enterAsTab=\"false\"");
+		gridStyle.Append(" bgInvert=\"true\"");
+		gridStyle.Append(" xmlns:msxsl=\"urn:schemas-microsoft-com:xslt\"");
+		gridStyle.Append(" xmlns:aras=\"http://www.aras.com\"");
+		gridStyle.Append(" xmlns:usr=\"urn:the-xml-files:xslt\">");
+		gridStyle.Append(" <thead>");
+		gridStyle.Append("  <th align=\"c\">" + CCO.Cache.GetPropertyFromCache("4F1AC04A2B484F3ABA4E20DB63808A88", "item_number").GetAttribute("label") + "</th>");
+		gridStyle.Append("  <th align=\"c\">" + CCO.Cache.GetPropertyFromCache("4F1AC04A2B484F3ABA4E20DB63808A88", "major_rev").GetAttribute("label") + "</th>");
+		gridStyle.Append("  <th align=\"c\">" + CCO.Cache.GetPropertyFromCache("4F1AC04A2B484F3ABA4E20DB63808A88", "state").GetAttribute("label") + "</th>");
+		gridStyle.Append("  <th align=\"c\">" + CCO.Cache.GetPropertyFromCache("5E9C5A12CC58413A8670CF4003C57848", "sort_order").GetAttribute("label") + "</th>");
+		gridStyle.Append("  <th align=\"c\">" + CCO.Cache.GetPropertyFromCache("5E9C5A12CC58413A8670CF4003C57848", "quantity").GetAttribute("label") + "</th>");
+		gridStyle.Append("  <th align=\"c\">" + CCO.Cache.GetPropertyFromCache("450906E86E304F55A34B3C0D65C097EA", "locked_by_id").GetAttribute("label") + "</th>");
+		gridStyle.Append("  <th align=\"c\">" + CCO.Cache.GetPropertyFromCache("4F1AC04A2B484F3ABA4E20DB63808A88", "name").GetAttribute("label") + "</th>");
+		gridStyle.Append("  <th align=\"c\">" + effectivityStringNotationProperty.GetAttribute("label") + "</th>");
+		gridStyle.Append("  <th align=\"c\">" + CCO.Cache.GetPropertyFromCache("5E9C5A12CC58413A8670CF4003C57848", "reference_designator").GetAttribute("label") + "</th>");
+		gridStyle.Append(" </thead>");
+		gridStyle.Append(" <columns>");
+		gridStyle.Append("  <column width=\"220\" edit=\"NOEDIT\"  align=\"l\" order=\"0\" />");
+		gridStyle.Append("  <column width=\"40\"  edit=\"NOEDIT\"  align=\"c\" order=\"1\" />");
+		gridStyle.Append("  <column width=\"90\"  edit=\"NOEDIT\"  align=\"c\" order=\"2\" />");
+		gridStyle.Append("  <column width=\"70\"  edit=\"NOEDIT\"  align=\"c\" order=\"3\" sort=\"numeric\"/>");
+		gridStyle.Append("  <column width=\"70\"  edit=\"NOEDIT\"  align=\"c\" order=\"4\" sort=\"numeric\"/>");
+		gridStyle.Append("  <column width=\"40\"  edit=\"NOEDIT\"  align=\"c\" order=\"5\" />");
+		gridStyle.Append("  <column width=\"250\" edit=\"NOEDIT\"  align=\"l\" order=\"6\" />");
+		gridStyle.Append("  <column width=\"" + effectivityStringNotationProperty.GetAttribute("column_width") + "\" edit=\"NOEDIT\"  align=\"l\" order=\"7\" />");
+		gridStyle.Append("  <column width=\"100\" edit=\"NOEDIT\"  align=\"l\" order=\"8\" />");
+		gridStyle.Append(" </columns>");
+		gridStyle.Append(" <menu>");
+		gridStyle.Append(" 	<emptytag/>");
+		gridStyle.Append(" </menu>");
+	]]></method_code>
+  <method_type>C#</method_type>
+  <name>PE_GetMultilBom</name>
+ </Item>
+</AML>

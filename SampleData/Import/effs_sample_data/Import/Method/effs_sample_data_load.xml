@@ -1,0 +1,133 @@
+﻿<AML>
+ <Item type="Method" id="EBD750ABFD7346D9B4FA84F08127992F" action="add">
+  <execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to>
+  <method_code><![CDATA[	// method takes the package file path and loads the data files
+	Innovator inn = this.getInnovator();
+	string path = this.getProperty("path");
+
+	if (string.IsNullOrEmpty(path))
+		return inn.newError("Error in effs_sample_data_load: 'path' property must be passed in method call.");
+
+	path = Path.Combine(path, @"SampleData\Data");
+
+	Item result = inn.applyMethod("effs_sample_data_delete", string.Empty);
+	if (result.isError())
+	{
+		return result;
+	}
+
+	// {filename,itemtype}
+	Dictionary<string,string> loadItems = new Dictionary<string,string>();
+
+	loadItems.Add("001-Part.txt", "Part");
+	loadItems.Add("002-PartBOM.txt", "Part BOM");
+	loadItems.Add("003-PartBOM-Effectivity.txt", "effs_Part_BOM_expression");
+
+	foreach (KeyValuePair<string,string> item in loadItems)
+	{
+		string filename = item.Key;
+		string itemtype = item.Value;
+
+		using (StreamReader sr = new StreamReader(path + @"\" + filename))
+		{
+			string content = sr.ReadToEnd();
+
+			// parse data files, build AML, and load items
+			Item res = createItems(inn, itemtype, content, path);
+
+			if (res.isError())
+				return res;
+		}
+	}
+
+	return inn.newResult("Success!");
+}
+
+public static Item createItems(Innovator inn, string itemtype, string content, string path)
+{
+	// validate parameters
+	if (string.IsNullOrEmpty(itemtype) || string.IsNullOrEmpty(content))
+		return inn.newError("Error in createItems(): 'itemtype' and 'content' properties cannot be empty.");
+
+	// build aml from input
+	string aml = "<AML>\n";
+
+	// first line in file contains properties
+	string[] lines = content.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+	string[] props = lines[0].Split('\t');
+
+	for (int i = 1; i < lines.Length; i++)
+	{
+		string line = lines[i];
+
+		if (string.IsNullOrEmpty(line)) continue; // line is blank
+
+		string itemId = line.Split('\t')[0]; // assumes 'id' is always the first col
+		string item = "<Item type='" + itemtype + "' action='add' id='" + itemId + "' doGetItem='0'>\n";
+
+		int propIndex = 0;
+		while (propIndex < props.Length)
+		{
+			int nextTab = line.IndexOf('\t');
+			string prop = props[propIndex];
+
+			if (nextTab == 0)
+			{
+				// we hit a null property value. skip this property.
+				if (line.Length > 0)
+					line = line.Substring(1);
+				propIndex++;
+			}
+			else if (nextTab < 0)
+			{
+				// end of line
+				if (line.Length > 0 && !string.IsNullOrWhiteSpace(prop))
+				{
+					item += WrapPropertyInTag(prop, line);
+				}
+				break;
+			}
+			else
+			{
+				// add property to aml
+				string value = line.Substring(0, nextTab);
+				item += WrapPropertyInTag(prop, value);
+
+				// remove the property we just processed and the tab
+				line = line.Substring(nextTab);
+				if (line.Length > 0)
+					line = line.Substring(1);
+
+				propIndex++;
+			}
+		}
+
+		item += "</Item>\n";
+		aml += item;
+	}
+
+	aml += "</AML>";
+
+	// write log for debugging load issues
+	logAML(path + @"\Logs\" + itemtype + ".xml", aml);
+
+	Item res = inn.applyAML(aml);
+
+	return res;
+}
+
+public static string WrapPropertyInTag(string propertyName, string value)
+{
+	return string.Format(CultureInfo.InvariantCulture, "<{0}><![CDATA[{1}]]]]><![CDATA[></{0}>\n", propertyName, value);
+}
+
+public static void logAML(string name, string aml)
+{
+	// print AML to file for debugging
+	System.IO.FileInfo file = new System.IO.FileInfo(name);
+	file.Directory.Create(); 
+	System.IO.File.WriteAllText(file.FullName, aml);]]></method_code>
+  <method_type>C#</method_type>
+  <name>effs_sample_data_load</name>
+ </Item>
+</AML>

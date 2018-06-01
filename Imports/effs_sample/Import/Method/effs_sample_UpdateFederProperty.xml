@@ -1,0 +1,31 @@
+﻿<AML>
+ <Item type="Method" id="0AC464C71475446B836759BFE43F9920" action="add">
+  <execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to>
+  <method_code><![CDATA[let editorField = getFieldByName('rule_editor');
+let editorFrame = editorField.querySelector('iframe');
+
+function addGroupValueEnteredEvent() {
+	let editorControl = editorFrame.contentWindow.editorControl;
+	let expressionSerializer = editorFrame.contentWindow.expressionSerializer;
+	if (!expressionSerializer || !editorControl || editorControl.eventCallbacks.onGroupValueEntered.length === 0) {
+		setTimeout(addGroupValueEnteredEvent, 30);
+		return;
+	}
+
+	if (editorControl.eventCallbacks.onGroupValueEntered.length === 1) {
+		editorControl.addEventListener(window, null, 'onGroupValueEntered', function() {
+			let definition = document.thisItem.getProperty('definition');
+			let expressionStringNotation = expressionSerializer.deserializeExpressionToString(definition);
+			document.thisItem.setProperty('expression_string_notation', expressionStringNotation);
+		});
+	}
+}
+
+let isNew = document.item.getAttribute('isTemp') === '1';
+if (!isNew) {
+	addGroupValueEnteredEvent();
+}]]></method_code>
+  <method_type>JavaScript</method_type>
+  <name>effs_sample_UpdateFederProperty</name>
+ </Item>
+</AML>

@@ -1,0 +1,20 @@
+﻿<AML>
+ <Item type="List" id="4F9D44F0C1E4476283078E3EFE846302" action="add">
+  <description>List of product models for Model Effectivity Variable</description>
+  <name>Model List</name>
+  <Relationships>
+   <Item type="Value" id="8AAAA334ED744378B9B7D065C30A9FB8" action="add">
+    <label xml:lang="en">Replicator</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="Model List" type="List">4F9D44F0C1E4476283078E3EFE846302</source_id>
+    <value>8AAAA334ED744378B9B7D065C30A9FB8</value>
+   </Item>
+   <Item type="Value" id="5B01962186554F2688FD1401A6440D16" action="add">
+    <label xml:lang="en">Replicator 2</label>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="Model List" type="List">4F9D44F0C1E4476283078E3EFE846302</source_id>
+    <value>5B01962186554F2688FD1401A6440D16</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

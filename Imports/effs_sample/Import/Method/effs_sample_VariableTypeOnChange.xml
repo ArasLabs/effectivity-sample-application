@@ -1,0 +1,13 @@
+﻿<AML>
+ <Item type="Method" id="07CF2C379DB5429FBC113D53E0B091B0" action="add">
+  <comments />
+  <execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to>
+  <method_code><![CDATA[let listField = 'list_id';
+
+let variableType = window.getFieldComponentByName('variable_type').getValue();
+
+window.getFieldByName(listField).style.visibility = variableType === 'List' ? '' : 'hidden';]]></method_code>
+  <method_type>JavaScript</method_type>
+  <name>effs_sample_VariableTypeOnChange</name>
+ </Item>
+</AML>

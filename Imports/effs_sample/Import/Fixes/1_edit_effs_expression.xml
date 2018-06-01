@@ -1,0 +1,13 @@
+<AML>
+	<Item type="ItemType" action="edit" where="[ITEMTYPE].name='effs_expression'">
+		<Relationships>
+			<Item type="Morphae" id="DD55CEEBFB7A4BC9B1A2BBEAC5391411" action="add">
+				<related_id>
+					<Item type="ItemType" action="get" select="id">
+						<name>effs_Part_BOM_expression</name>
+					</Item>
+				</related_id>
+			</Item>
+		</Relationships>
+	</Item>
+</AML>

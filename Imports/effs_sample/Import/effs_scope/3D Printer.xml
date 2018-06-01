@@ -1,0 +1,20 @@
+<AML>
+	<Item type="effs_scope" id="AC9CF6740AB249A9814DC20B76F8C57C" action="add">
+		<builder_method keyed_name="effs_sample_scope_builder" type="Method">A7BACAF555924D17AFE1EDFCA0BFD07E</builder_method>
+		<name>3D Printer</name>
+		<Relationships>
+			<Item type="effs_scope_itemtype" id="B3F61D433C424B4790A9DC32DEED22F4" action="add">
+				<related_id keyed_name="Part BOM" type="ItemType" name="Part BOM">5E9C5A12CC58413A8670CF4003C57848</related_id>
+			</Item>
+			<Item type="effs_sample_Scope_Variables" id="D362CF8F59C14277A7EE65B556B90A2D" action="add">
+				<related_id>36D3FBB2D55644CF81ED01131AAEE048</related_id>
+			</Item>
+			<Item type="effs_sample_Scope_Variables" id="9E7F383D985544AC96F1912D84472D3A" action="add">
+				<related_id>9372906AA6064D608C96D6E9C843AF93</related_id>
+			</Item>
+			<Item type="effs_sample_Scope_Variables" id="8A7C9E72B7934CC3AF6707B68271DD7C" action="add">
+				<related_id>77C45F4AFCEA4DA2BDE6D1E54D413A15</related_id>
+			</Item>
+		</Relationships>
+	</Item>
+</AML>

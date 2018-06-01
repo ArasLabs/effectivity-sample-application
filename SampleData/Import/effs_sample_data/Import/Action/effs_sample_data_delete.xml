@@ -1,0 +1,15 @@
+﻿<AML>
+ <Item type="Action" id="11069DAF249440E38DB53D4DC8FBA262" action="add">
+  <item_query />
+  <label xml:lang="en">Delete Effectivity Sample Data</label>
+  <location>server</location>
+  <method keyed_name="effs_sample_data_delete" type="Method">
+   <Item type="Method" action="get" select="id">
+    <name>effs_sample_data_delete</name>
+   </Item>
+  </method>
+  <target>one window</target>
+  <type>generic</type>
+  <name>effs_sample_data_delete</name>
+ </Item>
+</AML>

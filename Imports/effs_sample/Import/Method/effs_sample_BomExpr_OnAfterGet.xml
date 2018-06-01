@@ -1,0 +1,164 @@
+﻿<AML>
+ <Item type="Method" id="00356AA1AF7445B681FD7D84F462439B" action="add">
+  <execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to>
+  <method_code><![CDATA[	I18NSessionContext sessionContext = this.getInnovator().getI18NSessionContext();
+	int expressionsCount = this.getItemCount();
+	if (expressionsCount > 0)
+	{
+		ObtainInternalMethods(CCO);
+	}
+
+	for (int i = 0; i < expressionsCount; i++)
+	{
+		Item partBomExpression = this.getItemByIndex(i);
+		string scopeId = partBomExpression.getProperty("effs_scope_id");
+		string definition = partBomExpression.getProperty("definition");
+
+		// We should get missing properties if they were not selected in the request. In this case getProperty() result will be null.
+		bool scopeNodeIsAbsent = scopeId == null;
+		bool definitionNodeIsAbsent = definition == null;
+
+		if (scopeNodeIsAbsent || definitionNodeIsAbsent)
+		{
+			string selectAttribute = (scopeNodeIsAbsent ? "effs_scope_id" : null) + (scopeNodeIsAbsent && definitionNodeIsAbsent ? "," : null) + (definitionNodeIsAbsent ? "definition" : null);
+			Item expressionWithProperties = this.newItem(partBomExpression.getType(), "get");
+			expressionWithProperties.setID(partBomExpression.getID());
+			expressionWithProperties.setAttribute("select", selectAttribute);
+			expressionWithProperties.setAttribute("serverEvents", "0");
+			expressionWithProperties = expressionWithProperties.apply();
+
+			if (expressionWithProperties.isError())
+			{
+				return expressionWithProperties;
+			}
+
+			if (scopeNodeIsAbsent)
+			{
+				scopeId = expressionWithProperties.getProperty("effs_scope_id");
+			}
+
+			if (definitionNodeIsAbsent)
+			{
+				definition = expressionWithProperties.getProperty("definition");
+			}
+		}
+
+		string expressionStringNotation = string.Empty;
+
+		if (!string.IsNullOrEmpty(definition))
+		{
+			Aras.Server.Core.Configurator.Scope scopeObject = GetScopeObjectById(scopeId);
+			Aras.Server.Core.Configurator.ExpressionBase expression = GetExpressionObject(definition);
+
+			object expressionToStringNotationConverter = Activator.CreateInstance(_expressionToStringNotationConverterType, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic, null, new object[] { scopeObject.VariableList }, null);
+			expressionStringNotation = (string)_translateToStringNotationMethod.Invoke(expressionToStringNotationConverter, new object[] { expression });
+
+			System.Text.RegularExpressions.Regex dateRegEx = new System.Text.RegularExpressions.Regex(@"\d{4}-\d{2}-\d{2}T00:00:00");
+			System.Text.RegularExpressions.MatchCollection dateMatches = dateRegEx.Matches(expressionStringNotation);
+			foreach (System.Text.RegularExpressions.Match dateMatch in dateMatches)
+			{
+				string neutralDate = dateMatch.Value;
+				string localDate = sessionContext.ConvertFromNeutral(neutralDate, "date", "short_date");
+				expressionStringNotation = expressionStringNotation.Replace(neutralDate, localDate);
+			}
+		}
+
+		partBomExpression.setProperty("expression_string_notation", expressionStringNotation);
+	}
+
+	return this;
+}
+
+private static Aras.Server.Core.Configurator.ExpressionBase GetExpressionObject(string expressionXml)
+{
+	XmlDocument xmlDoc = new XmlDocument();
+	xmlDoc.PreserveWhitespace = false;
+	xmlDoc.LoadXml(expressionXml);
+	XmlNode expressionNode = xmlDoc.SelectSingleNode("expression");
+
+	return Aras.Server.Core.Configurator.ExpressionConverter.Instance.FromXml(expressionNode);
+}
+
+private Aras.Server.Core.Configurator.Scope GetScopeObjectById(string scopeId)
+{
+	Aras.Server.Core.Configurator.Scope scopeObject = null;
+
+	if (_scopesCollection.ContainsKey(scopeId))
+	{
+		scopeObject = _scopesCollection[scopeId];
+	}
+	else
+	{
+		Item effectivityScope = this.newItem("effs_scope", "get");
+		effectivityScope.setID(scopeId);
+		effectivityScope.setAttribute("select", "builder_method(name)");
+		effectivityScope = effectivityScope.apply();
+
+		if (effectivityScope.isError())
+		{
+			throw new Aras.Server.Core.InnovatorServerException(effectivityScope.getErrorString());
+		}
+
+		Item builderMethod = effectivityScope.getPropertyItem("builder_method");
+		string builderMethodName = builderMethod.getProperty("name");
+
+		Item scopeItem = this.newItem();
+		scopeItem.setID(scopeId);
+		scopeItem.setAction(builderMethodName);
+
+		scopeObject = (Aras.Server.Core.Configurator.Scope)_buildScopeMethod.Invoke(_scopeResolver, new object[] { scopeItem });
+		_scopesCollection.Add(scopeId, scopeObject);
+	}
+
+	return scopeObject;
+}
+
+private Dictionary<string, Aras.Server.Core.Configurator.Scope> _scopesCollection = new Dictionary<string, Aras.Server.Core.Configurator.Scope>();
+private object _scopeResolver = null;
+private Type _expressionToStringNotationConverterType = null;
+private System.Reflection.MethodInfo _translateToStringNotationMethod = null;
+private System.Reflection.MethodInfo _buildScopeMethod = null;
+
+private void ObtainInternalMethods(Aras.Server.Core.CallContext callContext)
+{
+	System.Reflection.BindingFlags publicInstanceFlags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance;
+	System.Reflection.BindingFlags nonPublicInstanceFlags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+
+	Type callContextType = callContext.GetType();
+
+	_expressionToStringNotationConverterType = callContextType.Assembly.GetType("Aras.Server.Core.Configurator.ExpressionToStringNotationConverter");
+	if (_expressionToStringNotationConverterType == null)
+	{
+		throw new Aras.Server.Core.InnovatorServerException("ExpressionToStringNotationConverter class was not found");
+	}
+
+	_translateToStringNotationMethod = _expressionToStringNotationConverterType.GetMethod("TranslateToStringNotation", nonPublicInstanceFlags);
+	if (_translateToStringNotationMethod == null)
+	{
+		throw new Aras.Server.Core.InnovatorServerException("TranslateToStringNotation method was not found");
+	}
+
+	System.Reflection.PropertyInfo callContextInternalPropertyInfo = callContextType.GetProperty("CallContextInternal", nonPublicInstanceFlags);
+	if (callContextInternalPropertyInfo == null)
+	{
+		throw new Aras.Server.Core.InnovatorServerException("CallContextInternal property was not found");
+	}
+
+	System.Reflection.PropertyInfo scopeResolverPropertyInfo = callContextInternalPropertyInfo.PropertyType.GetProperty("ScopeResolver", publicInstanceFlags);
+	if (scopeResolverPropertyInfo == null)
+	{
+		throw new Aras.Server.Core.InnovatorServerException("ScopeResolver property was not found");
+	}
+
+	_buildScopeMethod = scopeResolverPropertyInfo.PropertyType.GetMethod("BuildScope", publicInstanceFlags);
+	if (_buildScopeMethod == null)
+	{
+		throw new Aras.Server.Core.InnovatorServerException("BuildScope method was not found");
+	}
+
+	object callContextInternal = callContextInternalPropertyInfo.GetValue(callContext);
+	_scopeResolver = scopeResolverPropertyInfo.GetValue(callContextInternal);]]></method_code>
+  <method_type>C#</method_type>
+  <name>effs_sample_BomExpr_OnAfterGet</name>
+ </Item>
+</AML>

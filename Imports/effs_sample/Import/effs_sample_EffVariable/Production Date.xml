@@ -1,0 +1,7 @@
+﻿<AML>
+ <Item type="effs_sample_EffVariable" id="77C45F4AFCEA4DA2BDE6D1E54D413A15" action="add">
+  <description>Production Date Effectivity Variable</description>
+  <variable_type>Date</variable_type>
+  <name>Production Date</name>
+ </Item>
+</AML>

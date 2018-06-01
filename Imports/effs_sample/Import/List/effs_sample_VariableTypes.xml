@@ -1,0 +1,31 @@
+﻿<AML>
+ <Item type="List" id="1DB65A91C589426EA805DCD5ADF565A7" action="add">
+  <name>effs_sample_VariableTypes</name>
+  <Relationships>
+   <Item type="Value" id="5273BD6A450D4BE6B27B2932C9EB59A3" action="add">
+    <label xml:lang="en">Date</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="effs_sample_VariableTypes" type="List">1DB65A91C589426EA805DCD5ADF565A7</source_id>
+    <value>Date</value>
+   </Item>
+   <Item type="Value" id="888F74CEE261424CB8643911EA73EFAA" action="add">
+    <label xml:lang="en">Integer</label>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="effs_sample_VariableTypes" type="List">1DB65A91C589426EA805DCD5ADF565A7</source_id>
+    <value>Integer</value>
+   </Item>
+   <Item type="Value" id="F25FDED233C64E5184FF709A59F626FC" action="add">
+    <label xml:lang="en">String</label>
+    <sort_order>384</sort_order>
+    <source_id keyed_name="effs_sample_VariableTypes" type="List">1DB65A91C589426EA805DCD5ADF565A7</source_id>
+    <value>String</value>
+   </Item>
+   <Item type="Value" id="FC6C4017AEDD4B72A0B51EC3D0903BFA" action="add">
+    <label xml:lang="en">List</label>
+    <sort_order>512</sort_order>
+    <source_id keyed_name="effs_sample_VariableTypes" type="List">1DB65A91C589426EA805DCD5ADF565A7</source_id>
+    <value>List</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

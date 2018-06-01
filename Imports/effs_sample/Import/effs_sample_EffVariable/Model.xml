@@ -1,0 +1,8 @@
+﻿<AML>
+ <Item type="effs_sample_EffVariable" id="9372906AA6064D608C96D6E9C843AF93" action="add">
+  <description>Model Effectivity Variable</description>
+  <variable_type>List</variable_type>
+  <list_id keyed_name="Model List" type="List">4F9D44F0C1E4476283078E3EFE846302</list_id>
+  <name>Model</name>
+ </Item>
+</AML>

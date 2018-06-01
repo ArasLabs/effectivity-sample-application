@@ -1,0 +1,7 @@
+﻿<AML>
+ <Item type="effs_sample_EffVariable" id="36D3FBB2D55644CF81ED01131AAEE048" action="add">
+  <description>Unit Effectivity Variable</description>
+  <variable_type>Integer</variable_type>
+  <name>Unit</name>
+ </Item>
+</AML>

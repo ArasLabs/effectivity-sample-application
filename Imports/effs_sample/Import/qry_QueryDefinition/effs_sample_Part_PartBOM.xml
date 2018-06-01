@@ -1,0 +1,201 @@
+﻿<AML>
+ <Item type="qry_QueryDefinition" id="5362A34A16434A42821DE542CE3B5C14" action="add">
+  <name>effs_sample_Part_PartBOM</name>
+  <Relationships>
+   <Item type="qry_QueryItem" id="F75C5ABE24E84EC6957B7CD62AEE040D" action="add">
+    <alias>Part</alias>
+    <filter_xml><![CDATA[<condition>
+	<eq>
+		<property name="is_current" />
+		<constant>1</constant>
+	</eq>
+</condition>]]></filter_xml>
+    <item_type keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</item_type>
+    <ref_id>3F6ECCE677B84F7A81FBBAD3E8E140EA</ref_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+    <Relationships>
+     <Item type="qry_QueryItemSelectProperty" id="308CDDC208E347CCAB3C871EF034BF19" action="add">
+      <property_name>item_number</property_name>
+      <sort_order>256</sort_order>
+      <source_id keyed_name="F75C5ABE24E84EC6957B7CD62AEE040D" type="qry_QueryItem">F75C5ABE24E84EC6957B7CD62AEE040D</source_id>
+     </Item>
+     <Item type="qry_QueryItemSelectProperty" id="E873F0105EE64FACBF929D1F5928909A" action="add">
+      <property_name>name</property_name>
+      <sort_order>384</sort_order>
+      <source_id keyed_name="F75C5ABE24E84EC6957B7CD62AEE040D" type="qry_QueryItem">F75C5ABE24E84EC6957B7CD62AEE040D</source_id>
+     </Item>
+     <Item type="qry_QueryItemSelectProperty" id="852D3EB713FA49F2BBF346498704BF69" action="add">
+      <property_name>major_rev</property_name>
+      <sort_order>512</sort_order>
+      <source_id keyed_name="F75C5ABE24E84EC6957B7CD62AEE040D" type="qry_QueryItem">F75C5ABE24E84EC6957B7CD62AEE040D</source_id>
+     </Item>
+    </Relationships>
+   </Item>
+   <Item type="qry_QueryItem" id="5B1D6077567941CE9B0CA5DF765D79EA" action="add">
+    <alias>Part BOM</alias>
+    <filter_xml><![CDATA[<condition>
+	<or>
+		<eq>
+			<count>
+				<query_reference_path>60C81A16241741F287A1898054EC3EA8</query_reference_path>
+			</count>
+			<constant>0</constant>
+		</eq>
+		<gt>
+			<count>
+				<query_reference_path>3C2A11AD8F7249F39B4594994794E6F4</query_reference_path>
+			</count>
+			<constant>0</constant>
+		</gt>
+	</or>
+</condition>]]></filter_xml>
+    <item_type keyed_name="Part BOM" type="ItemType" name="Part BOM">5E9C5A12CC58413A8670CF4003C57848</item_type>
+    <ref_id>70E4ACEAFB50474BA9536396436EFF4E</ref_id>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+    <Relationships>
+     <Item type="qry_QueryItemSelectProperty" id="DF76A9AD6B8B4EB6A9AAE3EBFC4E3533" action="add">
+      <property_name>quantity</property_name>
+      <sort_order>128</sort_order>
+      <source_id keyed_name="5B1D6077567941CE9B0CA5DF765D79EA" type="qry_QueryItem">5B1D6077567941CE9B0CA5DF765D79EA</source_id>
+     </Item>
+     <Item type="qry_QueryItemSelectProperty" id="695DABF8ED284951BD61E0D3E3938274" action="add">
+      <property_name>effectivity_string_notation</property_name>
+      <sort_order>256</sort_order>
+      <source_id keyed_name="5B1D6077567941CE9B0CA5DF765D79EA" type="qry_QueryItem">5B1D6077567941CE9B0CA5DF765D79EA</source_id>
+     </Item>
+    </Relationships>
+   </Item>
+   <Item type="qry_QueryItem" id="71394D59FD874B1EA0716DD12CB12463" action="add">
+    <alias>effs_Part_BOM_expression</alias>
+    <filter_xml><![CDATA[<condition>
+	<and>
+		<eq>
+			<property name="effs_scope_id" />
+			<constant>AC9CF6740AB249A9814DC20B76F8C57C</constant>
+		</eq>
+		<or>
+			<eq>
+				<property name="behavior" />
+				<constant>float</constant>
+			</eq>
+			<eq>
+				<property name="behavior" />
+				<constant>fixed</constant>
+			</eq>
+		</or>
+		<eq>
+			<property name="definition" />
+			<constant>&lt;expression&gt;&lt;EQ&gt;&lt;variable id="36D3FBB2D55644CF81ED01131AAEE048"&gt;&lt;/variable&gt;&lt;constant type="int"&gt;$Unit&lt;/constant&gt;&lt;/EQ&gt;&lt;EQ&gt;&lt;variable id="9372906AA6064D608C96D6E9C843AF93"&gt;&lt;/variable&gt;&lt;named-constant id="$Model"&gt;&lt;/named-constant&gt;&lt;/EQ&gt;&lt;EQ&gt;&lt;variable id="77C45F4AFCEA4DA2BDE6D1E54D413A15"&gt;&lt;/variable&gt;&lt;constant type="datetime"&gt;$ProductionDate&lt;/constant&gt;&lt;/EQ&gt;&lt;/expression&gt;</constant>
+		</eq>
+	</and>
+</condition>]]></filter_xml>
+    <item_type keyed_name="effs_Part_BOM_expression" type="ItemType" name="effs_Part_BOM_expression">CBBB3829764048B7B0099CFD4C442EB2</item_type>
+    <ref_id>AF452E24988F47BB9D95A1D0F1853B8E</ref_id>
+    <sort_order>384</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+   </Item>
+   <Item type="qry_QueryItem" id="FF23F33B9FED456E8F5930EA59D07DFD" action="add">
+    <alias>effs_Part_BOM_expr_no_resolve</alias>
+    <filter_xml><![CDATA[<condition>
+	<and>
+		<eq>
+			<property name="effs_scope_id" />
+			<constant>AC9CF6740AB249A9814DC20B76F8C57C</constant>
+		</eq>
+		<or>
+			<eq>
+				<property name="behavior" />
+				<constant>float</constant>
+			</eq>
+			<eq>
+				<property name="behavior" />
+				<constant>fixed</constant>
+			</eq>
+		</or>
+	</and>
+</condition>]]></filter_xml>
+    <item_type keyed_name="effs_Part_BOM_expression" type="ItemType" name="effs_Part_BOM_expression">CBBB3829764048B7B0099CFD4C442EB2</item_type>
+    <ref_id>7ABF9FCFECA8494091985F42688CCF3D</ref_id>
+    <sort_order>512</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+   </Item>
+   <Item type="qry_QueryParameter" id="8AC0B41F44104B518D582E069247C436" action="add">
+    <name>Unit</name>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+    <value />
+   </Item>
+   <Item type="qry_QueryParameter" id="C64980FE465946D280FF2E1FC59B14FF" action="add">
+    <name>Model</name>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+    <value />
+   </Item>
+   <Item type="qry_QueryParameter" id="1201EF02D06F4B5CB12A45D48153FAAB" action="add">
+    <label xml:lang="en">Production Date</label>
+    <name>ProductionDate</name>
+    <sort_order>384</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+   </Item>
+   <Item type="qry_QueryReference" id="F1F98C45D26F4487B21CF6B40F605EDE" action="add">
+    <child_ref_id>3F6ECCE677B84F7A81FBBAD3E8E140EA</child_ref_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+   </Item>
+   <Item type="qry_QueryReference" id="87A5EEAE648A419CBAEA71E1DBBE13C5" action="add">
+    <child_ref_id>70E4ACEAFB50474BA9536396436EFF4E</child_ref_id>
+    <filter_xml><![CDATA[<condition>
+	<eq>
+		<property name="id" query_items_xpath="parent::Item" />
+		<property name="source_id" />
+	</eq>
+</condition>]]></filter_xml>
+    <parent_ref_id>3F6ECCE677B84F7A81FBBAD3E8E140EA</parent_ref_id>
+    <ref_id>995CB1E6FDD240F79F594897C7DFE4C4</ref_id>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+   </Item>
+   <Item type="qry_QueryReference" id="83C5600EE9B148BDA2E2D75193DB2F1C" action="add">
+    <child_ref_id>3F6ECCE677B84F7A81FBBAD3E8E140EA</child_ref_id>
+    <filter_xml><![CDATA[<condition>
+	<eq>
+		<property query_items_xpath="parent::Item" name="related_id" />
+		<property name="id" />
+	</eq>
+</condition>]]></filter_xml>
+    <parent_ref_id>70E4ACEAFB50474BA9536396436EFF4E</parent_ref_id>
+    <ref_id>C09ED863803C4C679F00D7072DF0E93E</ref_id>
+    <sort_order>384</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+   </Item>
+   <Item type="qry_QueryReference" id="11DB4CD67F494E149E6685A6179FAF8F" action="add">
+    <child_ref_id>AF452E24988F47BB9D95A1D0F1853B8E</child_ref_id>
+    <filter_xml><![CDATA[<condition>
+	<eq>
+		<property name="id" query_items_xpath="parent::Item" />
+		<property name="source_id" />
+	</eq>
+</condition>]]></filter_xml>
+    <parent_ref_id>70E4ACEAFB50474BA9536396436EFF4E</parent_ref_id>
+    <ref_id>3C2A11AD8F7249F39B4594994794E6F4</ref_id>
+    <sort_order>512</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+   </Item>
+   <Item type="qry_QueryReference" id="82438D7C0E924475849059133BBCABFE" action="add">
+    <child_ref_id>7ABF9FCFECA8494091985F42688CCF3D</child_ref_id>
+    <filter_xml><![CDATA[<condition>
+	<eq>
+		<property name="id" query_items_xpath="parent::Item" />
+		<property name="source_id" />
+	</eq>
+</condition>]]></filter_xml>
+    <parent_ref_id>70E4ACEAFB50474BA9536396436EFF4E</parent_ref_id>
+    <ref_id>60C81A16241741F287A1898054EC3EA8</ref_id>
+    <sort_order>640</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="qry_QueryDefinition">5362A34A16434A42821DE542CE3B5C14</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

@@ -1,0 +1,15 @@
+﻿<AML>
+ <Item type="Action" id="598D508383E14945A5F7DD792DA49136" action="add">
+  <item_query />
+  <label xml:lang="en">Load Effectivity Sample Data</label>
+  <location>client</location>
+  <method keyed_name="effs_sample_data_dialog" type="Method">
+   <Item type="Method" action="get" select="id">
+    <name>effs_sample_data_dialog</name>
+   </Item>
+  </method>
+  <target>none</target>
+  <type>generic</type>
+  <name>effs_sample_data_action</name>
+ </Item>
+</AML>

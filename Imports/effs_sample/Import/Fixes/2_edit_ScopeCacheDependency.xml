@@ -1,0 +1,34 @@
+<AML>
+	<Item type="ItemType" action="edit" where="[ITEMTYPE].name='ScopeCacheDependency'">
+		<Relationships>
+			<Item type="Morphae" id="81C8555EA24D4723ABB657E21B7B33E5" action="add">
+				<related_id>
+					<Item type="ItemType" action="get" select="id">
+						<name>effs_sample_Scope_Variables</name>
+					</Item>
+				</related_id>
+			</Item>
+			<Item type="Morphae" id="EFEDA9F01CF3491BB32A1311F3A34C80" action="add">
+				<related_id>
+					<Item type="ItemType" action="get" select="id">
+						<name>effs_sample_EffVariable</name>
+					</Item>
+				</related_id>
+			</Item>
+			<Item type="Morphae" id="12273BBB7CC149B79BF22800B2D403B3" action="add">
+				<related_id>
+					<Item type="ItemType" action="get" select="id">
+						<name>List</name>
+					</Item>
+				</related_id>
+			</Item>
+			<Item type="Morphae" id="345843F2646D40DC8435329067CC8D81" action="add">
+				<related_id>
+					<Item type="ItemType" action="get" select="id">
+						<name>Value</name>
+					</Item>
+				</related_id>
+			</Item>
+		</Relationships>
+	</Item>
+</AML>
