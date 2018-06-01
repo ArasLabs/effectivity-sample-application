@@ -10,7 +10,7 @@ Using Effectivity Services, a custom application can enable you to:
 * Set effectivity conditions on relationships
 * Resolve structures using effectivity to generate configured structures
 
-In this sample application, effectivity is managed in the Part BOM structure of MakerBot Replicator, which is MakerBot’s last open-source 3D printer. Differences among various configurations of the Replicator are managed via effectivity using Model, Unit and Production Date variables. The configurable MakerBot Replicator Part BOM structure can be resolved to a specific structure by providing the desired effectivity criteria.
+In this sample application, effectivity is managed in the Part BOM structure of MakerBot Replicator, which is MakerBot's last open-source 3D printer. Differences among various configurations of the Replicator are managed via effectivity using Model, Unit and Production Date variables. The configurable MakerBot Replicator Part BOM structure can be resolved to a specific structure by providing the desired effectivity criteria.
 
 This sample application is an Aras Community Project. It is not a standard product, and should not be deployed to production as-is. The purpose of the sample application is to demonstrate the Effectivity Services API capabilities so that custom applications can be built to address specific business requirements and processes. For more information on the Effectivity Services API, check out the [Effectivity Services Programmers Guide](./Documentation/Aras%20Innovator%2011.0%20-%20Effectivity%20Services%20Programmers%20Guide.pdf)
 
