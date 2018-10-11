@@ -1,0 +1,9 @@
+﻿<AML>
+ <Item type="CommandBarButton" id="EF0FFC306468437F81A58D413BC67ED0" action="add">
+  <image>../Images/SetEffectivityCriteria.svg</image>
+  <label xml:lang="en">Set Effectivity Criteria</label>
+  <on_click_handler keyed_name="effs_sample_modifyCriteriaHandl" type="Method">C780C2E3793B4088A7F1104387CD4B47</on_click_handler>
+  <tooltip_template xml:lang="en">Set Effectivity Criteria</tooltip_template>
+  <name>effs_sample_modifyEffectivityCriteria</name>
+ </Item>
+</AML>

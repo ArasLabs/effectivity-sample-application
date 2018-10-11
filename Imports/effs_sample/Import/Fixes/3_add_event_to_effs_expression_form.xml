@@ -1,6 +1,6 @@
 ﻿<AML>
 	<Item type="Form Event" id="30E97D2F0F494A8990304C9736FDC050" action="add">
-		<form_event>onformpopulated</form_event>
+		<form_event>onload</form_event>
 		<related_id keyed_name="effs_sample_UpdateFederProperty" type="Method">
 			<Item type="Method" action="get" select="id">
 				<name>effs_sample_UpdateFederProperty</name>

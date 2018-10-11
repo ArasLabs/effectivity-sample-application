@@ -25,7 +25,12 @@ window.CustomParametersProvider = function() {
 	};
 
 	this.setParameter = function(name, value) {
-		if (name === 'ProductionDate' && !parameters.hasOwnProperty(name)) {
+		//TreeGridView sets and updates parameter values using this setParameter() method.
+		//"Production Date" parameter is named as ID of the "Production Date" effectivity variable ("E3EDDEC18B584347B3F11A517CF2AC2E") in order
+		//to be able to provide default values for the Effectivity Criteria Dialog using standard TreeGridView parameters functionality.
+		//However, it is required to set dynamic default value (current date) for the "Production Date" parameter which is not supported out of the box.
+		//So we should replace parameter value with current date once during default parameter values initialization when corresponding property does not exist.
+		if (name === 'E3EDDEC18B584347B3F11A517CF2AC2E' && !parameters.hasOwnProperty(name)) {
 			value = window.getCurrentDate();
 		}
 

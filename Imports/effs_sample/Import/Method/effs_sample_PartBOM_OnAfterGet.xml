@@ -1,34 +1,83 @@
 ﻿<AML>
  <Item type="Method" id="1C30FBE1390045FCBF7B10B88512B52F" action="add">
   <execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to>
-  <method_code><![CDATA[	int partBomsCount = this.getItemCount();
+  <method_code><![CDATA[	int partBomItemCount = this.getItemCount();
 
-	for (int i = 0; i < partBomsCount; i++)
+	if (partBomItemCount == 0)
 	{
-		Item partBom = this.getItemByIndex(i);
-		Item partBomExpressions = this.newItem("effs_Part_BOM_expression", "get");
-		partBomExpressions.setProperty("source_id", partBom.getID());
-		partBomExpressions.setAttribute("select", "id");
-		partBomExpressions = partBomExpressions.apply();
+		//No items were passed on the method call. So, it means there is nothing to proceed
+		return this;
+	}
 
-		if (partBomExpressions.isError() && !string.Equals(partBomExpressions.getErrorCode(), "0", StringComparison.Ordinal))
+	Dictionary<string, Item> partBomItemsByIds = new Dictionary<string, Item>();
+
+	for (int i = 0; i < partBomItemCount; i++)
+	{
+		Item partBomItem = this.getItemByIndex(i);
+
+		//This fixes a bug of TGV, where if there is no mapped property to cell, and this property not returned,
+		//then TGV throws an exception. That is why all returned Part BOM instances have to have this thing.
+		partBomItem.setProperty("effectivity_string_notation", string.Empty);
+
+		//Put Part BOM item to the dictionary for quick access in the future
+		partBomItemsByIds[partBomItem.getID()] = partBomItem;
+	}
+
+	string partBomIdList = string.Join(",", partBomItemsByIds.Keys);
+	
+	//Get all effectivity expression items with the use of the just one request
+	Item partBomExpressions = this.newItem("effs_Part_BOM_expression", "get");
+	partBomExpressions.setPropertyAttribute("source_id", "condition", "in");
+	partBomExpressions.setProperty("source_id", partBomIdList);
+	partBomExpressions.setAttribute("select", "source_id,expression_string_notation");
+	partBomExpressions = partBomExpressions.apply();
+
+	if (partBomExpressions.isError() && !string.Equals(partBomExpressions.getErrorCode(), "0", StringComparison.Ordinal))
+	{
+		//The error appears and that is not "nothing found" one
+		return partBomExpressions;
+	}
+
+	//Let's group effs_Part_BOM_expression items by source_id for quick access
+	Dictionary<string, List<Item>> expressionItemsGroupedBySourceIds = new Dictionary<string, List<Item>>();
+
+	int partBomExpressionCount = partBomExpressions.getItemCount();
+	for (int i = 0; i < partBomExpressionCount; i++)
+	{
+		Item partBomExpressionItem = partBomExpressions.getItemByIndex(i);
+		string sourcePartBomId = partBomExpressionItem.getProperty("source_id");
+
+		List<Item> effectivityExpressionItemsPerPartBomItems;
+		if (!expressionItemsGroupedBySourceIds.TryGetValue(sourcePartBomId, out effectivityExpressionItemsPerPartBomItems))
 		{
-			return partBomExpressions;
+			effectivityExpressionItemsPerPartBomItems = new List<Item>();
+			expressionItemsGroupedBySourceIds[sourcePartBomId] = effectivityExpressionItemsPerPartBomItems;
+		}
+		effectivityExpressionItemsPerPartBomItems.Add(partBomExpressionItem);
+	}
+
+	//Let's join expression string notations for each Part BOM
+	//and set the corresponding Part BOM property 'effectivity_string_notation'
+	foreach (string partBomSourceId in expressionItemsGroupedBySourceIds.Keys)
+	{
+		List<Item> partBomExpressionItemsToCombine = expressionItemsGroupedBySourceIds[partBomSourceId];
+
+		string openingParenthesis = string.Empty;
+		string closingParenthesis = string.Empty;
+		if (partBomExpressionItemsToCombine.Count > 1)
+		{
+			openingParenthesis = "(";
+			closingParenthesis = ")";
 		}
 
-		List<string> expressionStringNotations = new List<string>();
-		int expressionsCount = partBomExpressions.getItemCount();
-		bool addBrackets = expressionsCount > 1;
-
-		for (int j = 0; j < expressionsCount; j++)
-		{
-			Item partBomExpression = partBomExpressions.getItemByIndex(j);
-			string expressionStringNotation = partBomExpression.getProperty("expression_string_notation");
-			expressionStringNotations.Add(addBrackets ? "(" + expressionStringNotation + ")" : expressionStringNotation);
-		}
-
-		string effectivityStringNotation = string.Join(" OR ", expressionStringNotations);
-		partBom.setProperty("effectivity_string_notation", effectivityStringNotation);
+		IEnumerable<string> expressionStringNotations = partBomExpressionItemsToCombine
+			.Select(partBomExpressionItem => string.Format(CultureInfo.InvariantCulture,
+				"{0}{1}{2}",
+				openingParenthesis,
+				partBomExpressionItem.getProperty("expression_string_notation"),
+				closingParenthesis));
+	
+		partBomItemsByIds[partBomSourceId].setProperty("effectivity_string_notation", string.Join(" OR ", expressionStringNotations));
 	}
 
 	return this;]]></method_code>

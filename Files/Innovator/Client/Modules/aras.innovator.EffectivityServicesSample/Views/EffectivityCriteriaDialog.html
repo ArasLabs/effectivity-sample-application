@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="../../../javascript/include.aspx?classes=DynamicTreeGrid.css"/>
+	<link rel="stylesheet" type="text/css" href="../Styles/EffectivityCriteriaDialog.css"/>
+	<script type="text/javascript" src="../../../javascript/include.aspx?classes=ArasModules,XmlDocument,ToolbarWrapper,DynamicTreeGrid"></script>
+	<script type="text/javascript" src="../Scripts/EffectivityCriteriaDialogToolbarFormatters.js"></script>
+	<script type="text/javascript" src="../Scripts/EffectivityCriteriaDialogViewController.js"></script>
+	<script type="text/javascript">
+		let effectivityCriteriaDialogViewController;
+
+		window.addEventListener('DOMContentLoaded', function() {
+			effectivityCriteriaDialogViewController = new EffectivityCriteriaDialogViewController(
+				window.frameElement.dialogArguments, 'toolbar_container', 'grid_container', 'apply_button', 'clear_button');
+		});
+	</script>
+</head>
+<body class="aras-flex aras-flex_column">
+	<div id="toolbar_container"></div>
+	<div id="grid_container"></div>
+	<div id="buttons_container">
+		<button id="apply_button" class="aras-btn"></button>
+		<button id="clear_button" class="aras-btn aras-btn_secondary"></button>
+	</div>
+</body>
+</html>

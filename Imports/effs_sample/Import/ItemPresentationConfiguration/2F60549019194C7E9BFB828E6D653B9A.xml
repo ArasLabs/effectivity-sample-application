@@ -1,0 +1,8 @@
+﻿<AML>
+ <Item type="ItemPresentationConfiguration" id="2F60549019194C7E9BFB828E6D653B9A" action="add">
+  <client_type>js</client_type>
+  <item_id keyed_name="effs_sample_Part_PartBOM" type="PresentableItems">10C00B57BDF146279451D9E428916754</item_id>
+  <item_type_id keyed_name="rb_TreeGridViewDefinition" type="ItemType" name="rb_TreeGridViewDefinition">6AFE8A9127ED48FFB2F9183B9922981B</item_type_id>
+  <presentation_config_id keyed_name="effs_sample" type="PresentationConfiguration">E808279BAD3E4F87956B074A19C5AF43</presentation_config_id>
+ </Item>
+</AML>

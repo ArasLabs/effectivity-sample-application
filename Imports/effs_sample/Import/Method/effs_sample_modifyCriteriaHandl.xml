@@ -1,0 +1,73 @@
+﻿<AML>
+ <Item type="Method" id="C780C2E3793B4088A7F1104387CD4B47" action="add">
+  <execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to>
+  <method_code><![CDATA[require(['Modules/aras.innovator.EffectivityServicesSample/Scripts/EffectivityCriteriaDialog'], function(EffectivityCriteriaDialog) {
+	const effectivityScopeIdParameterName = 'EffectivityScopeId';
+	const effectivityCriteriaDefinitionParameterName = 'EffectivityCriteriaDefinition';
+
+	const getTermNodeAsString = function(id, datatype, value) {
+		const constant = !datatype ? '<named-constant id="' + value + '" />' : '<constant type="' + datatype + '">' + value + '</constant>';
+
+		return '<eq><variable id="' + id + '"/>' + constant + '</eq>';
+	};
+
+	//This is our entry point to define an effectivity sample context container
+	//within in 'inArgs.contextParams', when the relationship tab is open first time
+	if (!inArgs.contextParams.effsSampleContext) {
+		const treeGridViewMainPageModule = window.findCurrentRelationshipsTab().document.querySelector('#tree_grid_viewer').contentWindow.mainPage;
+		const presetTreeGridViewParameters = treeGridViewMainPageModule._parametersProvider.getParameters();
+
+		let presetScope;
+		const presetScopeId = presetTreeGridViewParameters[effectivityScopeIdParameterName];
+
+		if (presetScopeId) {
+			const reservedNonEffectivityVariableParameterNames = [effectivityScopeIdParameterName, effectivityCriteriaDefinitionParameterName];
+
+			const variables = Object.keys(presetTreeGridViewParameters)
+				.filter(function(parameterName) {
+					return reservedNonEffectivityVariableParameterNames.indexOf(parameterName) === -1;
+				})
+				.map(function(variableId) {
+					return {
+						id: variableId,
+						value: presetTreeGridViewParameters[variableId]
+					};
+				});
+
+			presetScope = {
+				id: presetScopeId,
+				variables: variables
+			};
+		}
+
+		inArgs.contextParams.effsSampleContext = {
+			effectivityCriteriaDialog: new EffectivityCriteriaDialog(window.aras, presetScope),
+			treeGridViewMainPageModule: treeGridViewMainPageModule
+		};
+	}
+
+	const effsSampleContext = inArgs.contextParams.effsSampleContext;
+
+	effsSampleContext.effectivityCriteriaDialog.show()
+		.then(function(scope) {
+			if (!scope) {
+				return;
+			}
+
+			let effectivityCriteriaDefinition = '';
+			Array.prototype.filter.call(scope.variables, function(variable) { return !!variable.value; })
+				.forEach(function(variable) {
+					effectivityCriteriaDefinition += getTermNodeAsString(variable.id, variable.datatype, variable.value);
+				});
+
+			const treeGridViewParametersProvider = effsSampleContext.treeGridViewMainPageModule._parametersProvider;
+			treeGridViewParametersProvider.setParameter(effectivityScopeIdParameterName, scope.id);
+			treeGridViewParametersProvider.setParameter(effectivityCriteriaDefinitionParameterName, effectivityCriteriaDefinition);
+			effsSampleContext.treeGridViewMainPageModule.reload();
+		});
+});
+]]></method_code>
+  <method_type>JavaScript</method_type>
+  <name>effs_sample_modifyCriteriaHandl</name>
+ </Item>
+</AML>

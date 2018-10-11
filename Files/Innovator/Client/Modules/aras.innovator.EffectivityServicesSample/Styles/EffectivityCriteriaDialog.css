@@ -1,0 +1,30 @@
+﻿#buttons_container {
+	align-self: flex-end;
+	margin-top: 15px;
+	margin-right: 15px;
+	margin-bottom: 15px;
+	max-height: 2.16666667rem;
+}
+
+.aras-grid-row-levelpad {
+	display: none;
+}
+
+.aras-form-input__wrapper.aras-form-input_invalid {
+	width: 100%;
+}
+
+.effs-toolbar-label {
+	font-weight: bold;
+	margin-right: 2px;
+}
+
+.effs-toolbar-item-field {
+	display: inline-block;
+	font-size: 8pt;
+	vertical-align: middle;
+	padding-bottom: 2px;
+	padding-top: 3px;
+	margin-right: 1px;
+	width: 130px;
+}

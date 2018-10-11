@@ -16,7 +16,7 @@
     <Relationships>
      <Item type="rb_ColumnMapping" id="6F10162C3BD642B1A8B7200F51648EF5" action="add">
       <cell_view_type>Text</cell_view_type>
-      <data_template>{"id": "{Part BOM.id}", "type": "Part BOM"}</data_template>
+      <data_template>{"id": "{Part.id}", "type": "Part"}</data_template>
       <sort_order>128</sort_order>
       <source_id keyed_name="DB5ADF4A88484BE8B6E0F176020271B5" type="rb_ColumnDefinition">DB5ADF4A88484BE8B6E0F176020271B5</source_id>
       <template>{"icon":"../Images/Part.svg","text_template":"{Part.item_number}/{Part.major_rev}"}</template>
@@ -93,23 +93,23 @@
     </Relationships>
    </Item>
    <Item type="rb_QueryDefinitionParameterMap" id="1C4B9BD9C4A44900BF059D02A32CA6B7" action="add">
-    <label xml:lang="en" />
+    <label xml:lang="en">Unit</label>
     <sort_order>128</sort_order>
     <source_id keyed_name="effs_sample_Part_PartBOM" type="rb_TreeGridViewDefinition">10C00B57BDF146279451D9E428916754</source_id>
     <user_input_data_type>integer</user_input_data_type>
     <user_input_default_value xml:lang="en" />
     <user_input_pattern />
-    <qd_parameter_name>Unit</qd_parameter_name>
+    <qd_parameter_name>C5A13FB8A5994B16A75F1E086CC8920D</qd_parameter_name>
    </Item>
    <Item type="rb_QueryDefinitionParameterMap" id="3C642DBCC7254CCEA932FD9DF3D22C62" action="add">
-    <label xml:lang="en" />
+    <label xml:lang="en">Model</label>
     <sort_order>256</sort_order>
     <source_id keyed_name="effs_sample_Part_PartBOM" type="rb_TreeGridViewDefinition">10C00B57BDF146279451D9E428916754</source_id>
     <user_input_data_source keyed_name="Model List" type="rb_UserInputDataSource">4F9D44F0C1E4476283078E3EFE846302</user_input_data_source>
     <user_input_data_type>list</user_input_data_type>
     <user_input_default_value xml:lang="en" />
     <user_input_pattern />
-    <qd_parameter_name>Model</qd_parameter_name>
+    <qd_parameter_name>F050516BA9BE4993ACE306D5271DC7D6</qd_parameter_name>
    </Item>
    <Item type="rb_QueryDefinitionParameterMap" id="555FC53D6A4743BB896F1227BD93EC97" action="add">
     <label xml:lang="en">Production Date</label>
@@ -118,7 +118,17 @@
     <user_input_data_type>date</user_input_data_type>
     <user_input_default_value xml:lang="en" />
     <user_input_pattern>short_date</user_input_pattern>
-    <qd_parameter_name>ProductionDate</qd_parameter_name>
+    <qd_parameter_name>E3EDDEC18B584347B3F11A517CF2AC2E</qd_parameter_name>
+   </Item>
+   <Item type="rb_QueryDefinitionParameterMap" id="C52F5E02172E40CF8E44BB030BB6112F" action="add">
+    <label xml:lang="en">Effectivity Scope Id</label>
+    <sort_order>512</sort_order>
+    <source_id keyed_name="effs_sample_Part_PartBOM" type="rb_TreeGridViewDefinition">10C00B57BDF146279451D9E428916754</source_id>
+    <user_input_data_source keyed_name="effs_scope" type="rb_UserInputDataSource">63449FB1A2EE411ABFEE16109A5576C3</user_input_data_source>
+    <user_input_data_type>item</user_input_data_type>
+    <user_input_default_value xml:lang="en">AC9CF6740AB249A9814DC20B76F8C57C</user_input_default_value>
+    <user_input_pattern />
+    <qd_parameter_name>EffectivityScopeId</qd_parameter_name>
    </Item>
    <Item type="rb_TreeRowDefinition" id="006787BEF61E48408C6C9A3816090610" action="add">
     <query_item_ref_id>3F6ECCE677B84F7A81FBBAD3E8E140EA</query_item_ref_id>

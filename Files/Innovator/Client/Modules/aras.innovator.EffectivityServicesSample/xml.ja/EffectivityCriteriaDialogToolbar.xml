@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<toolbarapplet buttonsize="26,25">
+	<toolbar id="effectivityCriteriaDialogToolbar">
+		<effs_label text="Scope" class="effs-toolbar-label"/>
+		<effs_item_field id="effs_scope_field" itemtype="effs_scope" class="effs-toolbar-item-field"/>
+	</toolbar>
+</toolbarapplet>

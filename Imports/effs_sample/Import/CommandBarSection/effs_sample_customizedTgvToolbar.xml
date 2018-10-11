@@ -1,0 +1,18 @@
+﻿<AML>
+ <Item type="CommandBarSection" id="3421C59D118246418FDBCD43DF2937D7" action="add">
+  <classification>Data Model</classification>
+  <location_name>TGV_Toolbar</location_name>
+  <name>effs_sample_customizedTgvToolbar</name>
+  <Relationships>
+   <Item type="CommandBarSectionItem" id="F0C833FC81264483A1730B5DD0ED3FF7" action="add">
+    <action>Replace</action>
+    <alternate keyed_name="effs_sample_modifyEffectivityCriteria" type="CommandBarItem">EF0FFC306468437F81A58D413BC67ED0</alternate>
+    <item_classification />
+    <related_id keyed_name="rb_ModifyParametersButton" type="CommandBarItem">226FCA15EE09439B8C4631BCBE7506A2</related_id>
+    <role keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</role>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="effs_sample_customizedTgvToolbar" type="CommandBarSection">3421C59D118246418FDBCD43DF2937D7</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

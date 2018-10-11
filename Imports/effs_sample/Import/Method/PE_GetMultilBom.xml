@@ -63,6 +63,15 @@ class GetDataForParsing
 		int itemsCount = itemList.getItemCount();
 		if (itemsCount == 0) return;
 		
+		HashSet<string> partBomIds = new HashSet<string>();
+		for (int i = 0; i < itemsCount; i++)
+		{
+			Item item =  itemList.getItemByIndex(i);
+			partBomIds.Add(item.getProperty("bom_id"));
+		}
+
+		Dictionary<string, string> expressionStringNotationsByPartBomIds = this.GetEffectivityStringNotation(partBomIds);
+
 		for (int i = 0; i < itemsCount; i++)
 		{
 			Item itm =  itemList.getItemByIndex(i);
@@ -81,9 +90,8 @@ class GetDataForParsing
 				infoOfItem.lockedId = "<emptytag />";
 			infoOfItem.name = itm.getProperty("related_name", "");
 			string partBomId = itm.getProperty("bom_id");
-			infoOfItem.effectivityStringNotation = this.GetEffectivityStringNotation(partBomId);
+			infoOfItem.effectivityStringNotation = expressionStringNotationsByPartBomIds[partBomId];
 			infoOfItem.brd = itm.getProperty("bom_ref_desg", "");
-						
 			if (infoOfItem.level == "0") zeroLevelItems.Add(infoOfItem);
 			
 			string source_id = string.Empty;
@@ -110,20 +118,31 @@ class GetDataForParsing
 		dictOfData.zeroLevelItems = zeroLevelItems;
 	}
 
-	private string GetEffectivityStringNotation(string partBomId)
-	{
-		Item partBom = item.newItem("Part BOM", "get");
-		partBom.setID(partBomId);
-		partBom.setAttribute("select", "id");
-		partBom = partBom.apply();
-
-		if (partBom.isError())
+		private Dictionary<string, string> GetEffectivityStringNotation(IEnumerable<string> partBomIds)
 		{
-			throw new Aras.Server.Core.InnovatorServerException(partBom.getErrorString());
-		}
+			string partBomIdList = string.Join(",", partBomIds);
 
-		return partBom.getProperty("effectivity_string_notation", string.Empty);
-	}
+			Item partBomItems = item.newItem("Part BOM", "get");
+			partBomItems.setAttribute("idlist", partBomIdList);
+			partBomItems.setAttribute("select", "effectivity_string_notation");
+			partBomItems = partBomItems.apply();
+
+			if (partBomItems.isError())
+			{
+				throw new Aras.Server.Core.InnovatorServerException(partBomItems.dom);
+			}
+
+			Dictionary<string, string> expressionStringNotations = new Dictionary<string, string>();
+
+			int partBomItemCount = partBomItems.getItemCount();
+			for(int i = 0; i < partBomItemCount; i++)
+			{
+				Item partBomItem = partBomItems.getItemByIndex(i);
+				expressionStringNotations.Add(partBomItem.getID(), partBomItem.getProperty("effectivity_string_notation", string.Empty));
+			}
+
+			return expressionStringNotations;
+		}
 
 	private Item GetAllItems()
 	{

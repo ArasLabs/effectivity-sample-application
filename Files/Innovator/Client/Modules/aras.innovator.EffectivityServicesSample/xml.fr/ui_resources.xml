@@ -1,0 +1,17 @@
+﻿<ui_resources>
+	<resource key="can_not_save_invalid_definition" value="Expression d'efficacité"/>
+
+	<!-- START: EffectivityCriteriaDialog resources -->
+	<resource key="effectivity_criteria_dialog.title" value="Filtre des critères d'efficacité" />
+	<resource key="effectivity_criteria_dialog.change_scope_message" value="Modification de l'ensemble &quot;{0}&quot; changera les valeurs saisies." />
+	<resource key="effectivity_criteria_dialog.grid.variable_column_label" value="Variable" />
+	<resource key="effectivity_criteria_dialog.grid.value_column_label" value="Valeur" />
+	<resource key="effectivity_criteria_dialog.grid.cell_editor.invalid_date_validation_message" value="Valeur saisie ne corresponde pas au modèle de la date &quot;{0}&quot;." />
+	<resource key="effectivity_criteria_dialog.grid.cell_editor.invalid_string_validation_message" value="Valeur saisie est invalide. Elle ne doit contenir que les lettres latines et les nombres." />
+	<resource key="effectivity_criteria_dialog.grid.cell_editor.invalid_integer_validation_message" value="Valeur saisie est invalide. Elle doit être un nombre entier." />
+	<resource key="effectivity_criteria_dialog.grid.cell_editor.invalid_list_value_validation_message" value="Valeur saisie est invalide." />
+	<resource key="effectivity_criteria_dialog.apply_button_label" value="Apply" />
+	<resource key="effectivity_criteria_dialog.clear_button_label" value="Clear" />
+	<resource key="effectivity_criteria_dialog.apply_button_validation_message" value="One of entered values is not valid. Please review and make necessary correction." />
+	<!-- END: EffectivityCriteriaDialog resources -->
+</ui_resources>
